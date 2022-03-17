@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f926bf08-4b12-4913-9835-383a515270cf" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="sactter-gatherFlow" doc:id="6310633a-4dfa-43db-9bfd-d8e470371938" >
+		<http:listener doc:name="Listener" doc:id="09196c9a-0ae3-42af-91ce-745495403ada" config-ref="HTTP_Listener_config" path="/sactter"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0506e024-32d4-472f-80e0-137a36fecdcb" message="#[payload]"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="73d5bc66-124b-415a-a11e-b7a45d9e22ef" >
+			<route >
+				<logger level="INFO" doc:name="Logger" doc:id="cd4a4143-9f2f-43a6-8bb0-36d8ac0ea7ef" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "name": "yatinesh"	&#10;}]'/>
+			</route>
+			<route >
+				<logger level="INFO" doc:name="Logger" doc:id="0aac1995-0276-4327-a210-aab9307b08a3" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "name": "nirbhavne"	&#10;}]'/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="d35860e7-2962-4477-8d83-171c795a9d3d">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+	</flow>
+</mule>
